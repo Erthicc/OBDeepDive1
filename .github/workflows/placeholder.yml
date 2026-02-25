@@ -1,0 +1,8 @@
+# .github/workflows/placeholder.yml
+name: placeholder
+on: [push]
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This repo is static. Enable GitHub Pages via repo settings to publish."
