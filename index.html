@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Survive & Scale — Organizational Leadership Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div id="healthWrap">
+        <div class="label">Health</div>
+        <div class="healthBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div id="healthFill"></div>
+        </div>
+        <div id="healthText">100%</div>
+      </div>
+      <div id="yearWrap">
+        <div id="yearText">Year 1 of 25</div>
+      </div>
+      <div id="moneyWrap">
+        <div class="label">Money</div>
+        <div id="moneyText">$0</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div id="centerCard">
+        <h1>Survive & Scale</h1>
+        <p class="lead">Answer Organizational Behavior & Leadership questions. Keep your company alive for 25 years.</p>
+        <button id="startBtn" class="btn">Start / Resume</button>
+        <button id="resetBtn" class="btn secondary">Reset Game</button>
+        <div id="progressText"></div>
+      </div>
+    </main>
+
+    <!-- Question Modal -->
+    <div id="questionModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+      <div class="modalContent">
+        <div id="qHeader">
+          <div id="qYear">Year 1</div>
+          <div id="qNumber">Question 1 of 2</div>
+        </div>
+        <h2 id="qTitle">Question text</h2>
+        <div id="options"></div>
+        <div id="explanation" class="explain hidden"></div>
+        <div class="modalActions">
+          <button id="nextBtn" class="btn hidden">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Modal -->
+    <div id="summaryModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+      <div class="modalContent">
+        <h2 id="summaryTitle">Year Summary</h2>
+        <div id="summaryBody"></div>
+        <div class="modalActions">
+          <button id="continueBtn" class="btn">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- End screens -->
+    <div id="endModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+      <div class="modalContent">
+        <h2 id="endTitle">Game Over</h2>
+        <div id="endBody"></div>
+        <div class="modalActions">
+          <button id="playAgainBtn" class="btn">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <small>Built for education — no backend required. Local saves use your browser only.</small>
+    </footer>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
