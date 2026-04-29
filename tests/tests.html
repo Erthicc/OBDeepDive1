@@ -2,37 +2,126 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Game Unit Tests (Browser)</title>
-    <style>body{font-family:Arial;padding:18px;background:#071026;color:#fff}</style>
+    <style>
+      :root {
+        --bg: #071026;
+        --panel: #101a33;
+        --panel-border: #243150;
+        --text: #f5f7ff;
+        --muted: #b7c2e0;
+        --pass: #7ee787;
+        --fail: #ff8b8b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        font-size: 18px;
+      }
+
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 2rem;
+        color: #ffffff;
+        letter-spacing: 0.2px;
+      }
+
+      .subtitle {
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      #output {
+        display: grid;
+        gap: 10px;
+      }
+
+      .test-item {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .pass {
+        color: var(--pass);
+      }
+
+      .fail {
+        color: var(--fail);
+      }
+
+      .summary {
+        margin-top: 18px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--panel-border);
+        border-radius: 12px;
+        color: var(--muted);
+        font-size: 0.98rem;
+        white-space: pre-wrap;
+        overflow-x: auto;
+      }
+    </style>
   </head>
   <body>
-    <h1>Simple Game Tests</h1>
-    <div id="output"></div>
+    <div class="wrap">
+      <h1>Simple Game Tests</h1>
+      <p class="subtitle">Visible test output with improved contrast and spacing.</p>
+      <div id="output"></div>
+      <div id="summary" class="summary">Running tests...</div>
+    </div>
+
     <script type="module">
       import { Game } from '../src/game.js';
       import questions from '../data/questions.json' assert { type: 'json' };
 
-      function assert(name, cond){
-        const out = document.getElementById('output');
+      const output = document.getElementById('output');
+      const summary = document.getElementById('summary');
+      let passed = 0;
+      let failed = 0;
+
+      function assert(name, cond) {
         const el = document.createElement('div');
-        el.textContent = (cond ? 'PASS: ' : 'FAIL: ') + name;
-        el.style.color = cond ? '#7ee787' : '#ff8b8b';
-        out.appendChild(el);
+        el.className = 'test-item ' + (cond ? 'pass' : 'fail');
+        el.textContent = `${cond ? 'PASS' : 'FAIL'}: ${name}`;
+        output.appendChild(el);
+
+        if (cond) passed++;
+        else failed++;
       }
 
       // Create minimal questions for money calc test
-      const q = questions.slice(0,6);
-      const game = new Game({questions: q});
+      const q = questions.slice(0, 6);
+      const game = new Game({ questions: q });
       game.reset();
 
       // Test money calc year 1 and 2
       const m1 = game.yearlyIncrement(1); // should be 1_000_000_000 * 1.07
       const m2 = game.yearlyIncrement(2);
+
       assert('Yearly increment > 1B', m1 > 1000000000);
       assert('Yearly increment year2 > year1', m2 > m1);
 
       // Simulate answering two correct in year1
-      // Ensure game.currentQuestion exists
       let res = game.answer(q[0].correctIndex);
       res = game.answer(q[1].correctIndex);
       assert('Both correct yields money increase', game.state.money === m1);
@@ -41,7 +130,10 @@
       res = game.answer(q[2].correctIndex);
       res = game.answer((q[3].correctIndex + 1) % q[3].options.length); // wrong
       assert('One wrong -> no money', game.state.money === m1);
-      assert('Health reduced by 50', game.state.health === 50 || game.state.health === 60 || game.state.health < 100);
+      assert(
+        'Health reduced by 50',
+        game.state.health === 50 || game.state.health === 60 || game.state.health < 100
+      );
 
       // Simulate two wrongs -> bankrupt
       game.state.health = 100;
@@ -49,6 +141,7 @@
       res = game.answer((q[5].correctIndex + 1) % q[5].options.length); // wrong
       assert('Two wrongs cause bankruptcy (isOver)', game.state.isOver === true || game.state.health === 0);
 
+      summary.textContent = `Tests complete\nPassed: ${passed}\nFailed: ${failed}\n\nFinal state:\n${JSON.stringify(game.state, null, 2)}`;
       console.log('Tests complete', game.state);
     </script>
   </body>
